@@ -3,19 +3,21 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
 -->
+<!DOCTYPE html>
 <html>
   <head>
-    <title>SAMS</title>
+    <title>Log In</title>
   </head>
   <body>
-    <div class="page-header">
-      <h1>SAMS</h1>
-      <h3>Welcome to the Simple Academic Management System!</h3>
-      <hr>
-    </div>
-    <div class="page-options">
-      <a href="signin.html">Sign In</a> | 
-      <a href="register.html">Register</a>
-    </div>
+    <h1>Login</h1>
+    <form action="LoginServlet" method="POST">
+        <h3>Enter your details...</h3>
+      <label for="user_name">Username:</label>
+      <input type="text" name="user_name" id="user_name" required><br>
+      <label for="user_pass">Password:</label>
+      <input type="password" id="user_pass" name="user_pass" required><br>
+      <button type="submit" value="submit">Sign In</button>
+    </form>
   </body>
 </html>
+
