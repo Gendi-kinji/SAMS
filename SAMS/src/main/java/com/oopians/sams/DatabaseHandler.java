@@ -58,26 +58,42 @@ public class DatabaseHandler {
     }
     
     public boolean setData(String table, Map<String, Object> data) {
-    String[] columns = data.keySet().toArray(new String[0]);
-    Object[] values = data.values().toArray();
-    String[] placeholders = new String[values.length];
-    Arrays.fill(placeholders, "?");
+        String[] columns = data.keySet().toArray(new String[0]);
+        Object[] values = data.values().toArray();
+        String[] placeholders = new String[values.length];
+        Arrays.fill(placeholders, "?");
 
-    // Generating lists of columns and placeholders:
-    String columnList = String.join(",", columns);
-    String placeholderList = String.join(",", placeholders);
+        // Generating lists of columns and placeholders:
+        String columnList = String.join(",", columns);
+        String placeholderList = String.join(",", placeholders);
 
-    String sql = "INSERT INTO " + table + " (" + columnList + ") VALUES (" + placeholderList + ")";
-    this.establishConnection();
-    try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-        for (int i = 0; i < values.length; i++) {
-            stmt.setObject(i + 1, values[i]);
+        String sql = "INSERT INTO " + table + " (" + columnList + ") VALUES (" + placeholderList + ")";
+        this.establishConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            for (int i = 0; i < values.length; i++) {
+                stmt.setObject(i + 1, values[i]);
+            }
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return stmt.executeUpdate() > 0;
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;
     }
-}
-
+    
+    public boolean checkData(String table, String column, String value) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            // Check if the value exists in the specified column
+            stmt = conn.prepareStatement("SELECT * FROM " + table + " WHERE " + column + " = ?");
+            stmt.setString(1, value);
+            rs = stmt.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            // Handle exceptions
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
