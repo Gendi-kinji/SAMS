@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>Register</title>
+    </head>
+    <body>
+        <h1>Register</h1>
+        <hr>
+        <h4>Enter your details</h4>
+        <link rel="stylesheet" type="text/css" href="registerstyle.css">
+        <form action="RegisterServlet" method="POST">
+            <label for="user_name">Username:</label><br>
+            <input type="text" id="user_name" name="user_name"><br>
+            <label for="user_pass">Password:</label><br>
+            <input type="password" id="user_pass" name="user_pass"><br>
+            <label for="user_type">User Type:</label><br>
+            <select name="user_type" id="user_type">
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+            </select><br><br>
+            <button type="submit" value="submit">Submit</button>
+        </form>
+    </body>
+</html>
