@@ -4,8 +4,15 @@
  */
 package com.oopians.sams;
 
+import jakarta.resource.cci.Connection;
+import jakarta.resource.cci.ResultSet;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,21 +35,77 @@ public class RegisterServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet RegisterServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
+    // Declaring the database handler
+        DatabaseHandler dbh;
+    // Get the form data
+        String username = request.getParameter("user_name");
+        String password = request.getParameter("user_pass");
+        String userType = request.getParameter("user_type");
+
+        // Validate the form data
+        if (username == null || username.trim().isEmpty() ||
+            password == null || password.trim().isEmpty() ||
+            userType == null || userType.trim().isEmpty()) {
+            // Invalid form data
+            response.setContentType("text/html");
+            PrintWriter out = response.getWriter();
+            out.println("<html><body>");
+            out.println("<p>Error: All fields are required.</p>");
+            out.println("</body></html>");
+            return;
         }
+
+        // Connect to the database
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydatabase", "myuser", "mypassword");
+
+            // Check if the username already exists
+            stmt = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
+            stmt.setString(1, username);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                // Username already exists
+                response.setContentType("text/html");
+                PrintWriter out = response.getWriter();
+                out.println("<html><body>");
+                out.println("<p>Error: Username already exists.</p>");
+                out.println("</body></html>");
+                return;
+            }
+
+            // Add the user to the database
+            stmt = conn.prepareStatement("INSERT INTO users (username, password, userType) VALUES (?, ?, ?)");
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.setString(3, userType);
+            stmt.executeUpdate();
+
+            // Display a success message
+            response.setContentType("text/html");
+            PrintWriter out = response.getWriter();
+            out.println("<html><body>");
+            out.println("<p>Registration successful!</p>");
+            out.println("</body></html>");
+        } catch (Exception e) {
+            throw new ServletException(e);
+        } finally {
+            // Close the database resources
+            if (rs != null) {
+                try { rs.close(); } catch (Exception e) {}
+            }
+            if (stmt != null) {
+                try { stmt.close(); } catch (Exception e) {}
+            }
+            if (conn != null) {
+                try { conn.close(); } catch (Exception e) {}
+            }
+        }
+    }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
