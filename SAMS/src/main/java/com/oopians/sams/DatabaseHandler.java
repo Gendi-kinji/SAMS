@@ -20,12 +20,13 @@ public class DatabaseHandler {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/db_sams";
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
     private Connection conn;
+    private ResultSet rs;
 
     private DatabaseHandler(){
         // private constructor - prevents direct instantiation
     }
 
-    // Function to create only one instance
+    // Function to create only one instance of the dbh class
     public static DatabaseHandler getInstance(){
         if(instance == null){
             instance = new DatabaseHandler();
@@ -81,16 +82,13 @@ public class DatabaseHandler {
     }
     
     public boolean checkData(String table, String column, String value) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {
             // Check if the value exists in the specified column
-            stmt = conn.prepareStatement("SELECT * FROM " + table + " WHERE " + column + " = ?");
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + table + " WHERE " + column + " = ?");
             stmt.setString(1, value);
             rs = stmt.executeQuery();
             return rs.next();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             // Handle exceptions
             e.printStackTrace();
             return false;
