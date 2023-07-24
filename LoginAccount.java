@@ -5,10 +5,10 @@ public abstract class LoginAccount {
    public static int width;
    public static int side;
     public static Shape createAccount(String user) {
-        if (shape.equals("teacher")) {
+        if (user.equals("teacher")) {
             return new Circle(radius);
         }
-        if (shape.equals("student")) {
+        if (user.equals("student")) {
             return new Rectangle(length, width);
         }
         else {
