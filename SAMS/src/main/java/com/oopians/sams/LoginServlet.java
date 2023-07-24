@@ -6,27 +6,18 @@ package com.oopians.sams;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-
-
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 
 /**
  *
  * @author fidel
  */
-@WebServlet(name = "RegisterServlet", urlPatterns = {"/RegisterServlet"})
-public class RegisterServlet extends HttpServlet {
+@WebServlet(name = "LoginServlet", urlPatterns = {"/LoginServlet"})
+public class LoginServlet extends HttpServlet {
 
     // Declaring the database handler
     DatabaseHandler dbh = DatabaseHandler.getInstance();
@@ -36,12 +27,10 @@ public class RegisterServlet extends HttpServlet {
         // Get the form data
         String username = request.getParameter("user_name");
         String password = request.getParameter("user_pass");
-        String userType = request.getParameter("user_type");
 
         // Validate the form data
         if (username == null || username.trim().isEmpty() ||
-            password == null || password.trim().isEmpty() ||
-            userType == null || userType.trim().isEmpty()) {
+            password == null || password.trim().isEmpty()) {
             // Invalid form data
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
@@ -51,37 +40,24 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        // Check if the username already exists
-        if (dbh.checkData("tbl_users", "user_name", username)) {
-            // Username already exists
+        // Check the user's credentials
+        if (dbh.checkData("tbl_users", "user_name", username) &&
+                dbh.checkData("tbl_users", "user_pass", password)) {
+            // Valid credentials
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
             out.println("<html><body>");
-            out.println("<p>Error: Username already exists.</p>");
+            out.println("<p>Login successful!</p>");
             out.println("</body></html>");
-            return;
+        } else {
+            // Invalid credentials
+            response.setContentType("text/html");
+            PrintWriter out = response.getWriter();
+            out.println("<html><body>");
+            out.println("<p>Error: Invalid username or password.</p>");
+            out.println("</body></html>");
         }
-
-}
-}
-
-
-        // Put user data in a hash-map
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("user_name", username);
-        userData.put("user_type", userType);
-        userData.put("user_pass", password);
-
-        // Add the user to the database
-        dbh.setData("tbl_users", userData);
-
-        // Display a success message
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<p>Registration successful!</p>");
-        out.println("</body></html>");
-    
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -94,10 +70,10 @@ public class RegisterServlet extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
+
     @Override
     public String getServletInfo() {
         return "Short description";
-    }
-
+    }// </editor-fold>
 
 }
