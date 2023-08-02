@@ -11,8 +11,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
 
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

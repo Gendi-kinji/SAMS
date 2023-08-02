@@ -6,10 +6,10 @@ public abstract class LoginAccount {
    public static int side;
     public static Shape createAccount(String user) {
         if (user.equals("teacher")) {
-            return new Circle(radius);
+            return new TeacherAccount(teacherID);
         }
         if (user.equals("student")) {
-            return new Rectangle(length, width);
+            return new StudentAccount(studentID);
         }
         else {
             System.out.println("Please input correct details");
