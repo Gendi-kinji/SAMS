@@ -1,4 +1,4 @@
-public abstract class LoginAccount {
+ abstract class LoginAccount {
     abstract void getDetails();
     public static int teacherid;
 
@@ -9,7 +9,7 @@ public abstract class LoginAccount {
         return new TeacherAccount(teacherid);
         }
         if (user.equals("student")) {
-            return new StudentAccount(studentid);
+            
         }
         else {
             System.out.println("Please input correct details");
